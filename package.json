@@ -2,14 +2,15 @@
   "name": "university-of-programming-hero",
   "version": "1.0.0",
   "description": "University Management Server",
-  "main": "index.js",
+  "main": "src/server.ts",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only server.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "MD Mehedi Hasan",
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.17",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"
   },
