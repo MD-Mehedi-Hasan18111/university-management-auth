@@ -4,11 +4,13 @@
   "description": "University Management Server",
   "main": "index.js",
   "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "MD Mehedi Hasan",
   "license": "ISC",
   "devDependencies": {
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"
   },
   "dependencies": {
