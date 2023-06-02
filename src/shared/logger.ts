@@ -1,18 +1,39 @@
-import winston from 'winston'
+/* eslint-disable no-undef */
+import { createLogger, format, transports } from 'winston'
+const { combine, timestamp, label, printf } = format
+import path from 'path'
 
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.json(),
+// Logs Custom format
+const myFormat = printf(({ level, message, label, timestamp }) => {
+  const date = new Date(timestamp)
+  const hour = date.getHours()
+  const min = date.getMinutes()
+  const sec = date.getSeconds()
+  return `[${label}] ${level}: ${message} - ${date.toDateString()} ${hour}:${min}:${sec}`
+})
+
+export const logger1 = createLogger({
+  level: 'error',
+  format: combine(label({ label: 'Error' }), timestamp(), myFormat),
   defaultMeta: { service: 'user-service' },
   transports: [
-    //
-    // - Write all logs with importance level of `error` or less to `error.log`
-    // - Write all logs with importance level of `info` or less to `combined.log`
-    //
-    new winston.transports.Console(),
-    new winston.transports.File({ filename: 'error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'combined.log', level: 'info' }),
+    new transports.Console(),
+    new transports.File({
+      filename: path.join(process.cwd(), 'logs', 'winston', 'error.log'),
+      level: 'error',
+    }),
   ],
 })
 
-export default logger
+export const logger2 = createLogger({
+  level: 'info',
+  format: combine(label({ label: 'Info' }), timestamp(), myFormat),
+  defaultMeta: { service: 'user-service' },
+  transports: [
+    new transports.Console(),
+    new transports.File({
+      filename: path.join(process.cwd(), 'logs', 'winston', 'info.log'),
+      level: 'info',
+    }),
+  ],
+})

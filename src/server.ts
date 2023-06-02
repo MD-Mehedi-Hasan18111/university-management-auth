@@ -1,17 +1,17 @@
 import mongoose from 'mongoose'
 import app from './app'
 import config from './config'
-import logger from './shared/logger'
+import { logger1, logger2 } from './shared/logger'
 
 async function main() {
   try {
     await mongoose.connect(config.database_url as string)
-    logger.info('Database Connected Successfully!')
+    logger2.info('Database Connected Successfully!')
     app.listen(config.port, () => {
-      logger.info(`App listening on port ${config.port}`)
+      logger2.info(`App listening on port ${config.port}`)
     })
   } catch (err) {
-    logger.error(err)
+    logger1.error(err)
   }
 }
 
