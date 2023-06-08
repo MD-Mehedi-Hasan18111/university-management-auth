@@ -1,13 +1,16 @@
 import { RequestHandler } from 'express'
 import { createAcademicSemester } from './academicSemester.service'
+import sendResponse from '../../../shared/sendResponse'
+import httpStatus from 'http-status'
 
 export const createSemester: RequestHandler = async (req, res, next) => {
   try {
     const data = req.body
-    console.log(data)
     const result = await createAcademicSemester(data)
-    res.status(200).json({
-      status: 'success',
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'semester created successfully',
       data: result,
     })
   } catch (error) {
