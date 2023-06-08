@@ -13,6 +13,7 @@ export const createSemester: RequestHandler = async (req, res, next) => {
       message: 'semester created successfully',
       data: result,
     })
+    next()
   } catch (error) {
     next(error)
   }
