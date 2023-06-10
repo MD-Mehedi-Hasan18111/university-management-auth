@@ -27,3 +27,16 @@ export type IAcademicSemester = {
 }
 
 export type IAcademicModel = Model<IAcademicSemester>
+
+export type IGenericResponse<T> = {
+  meta: {
+    page: number
+    limit: number
+    total: number
+  }
+  data: T
+}
+
+export type IAcademicSemesterFilter = {
+  searchTerm?: string
+}

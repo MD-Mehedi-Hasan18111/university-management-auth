@@ -10,7 +10,7 @@ const handleZodErrorHandler = (error: ZodError): IValidationError => {
     }
   })
 
-  const statusCode = 4000
+  const statusCode = 400
   return {
     statusCode,
     message: error.message,

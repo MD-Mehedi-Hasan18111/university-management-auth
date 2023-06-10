@@ -6,6 +6,7 @@ import ApiError from '../errors/ApiError'
 import { logger1 } from '../shared/logger'
 import { ZodError } from 'zod'
 import handleZodErrorHandler from '../errors/handleZodErrorHandler'
+import handleCastError from '../errors/handleCastError'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
@@ -14,12 +15,22 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
     ? console.log(`GlobalErrorHandler: `, err)
     : logger1.error('GlobalHandlerError', err)
 
-  let statusCode = 5000
+  let statusCode = 500
   let message = 'Something went wrong!'
   let errorMessages: IGenericError[] = []
 
   if (err?.name === 'ValidationError') {
     const simplified = handleValidationError(err)
+    statusCode = simplified.statusCode
+    message = simplified.message
+    errorMessages = simplified.errorMessages
+  } else if (err?.name === 'CastError') {
+    const simplified = handleCastError(err)
+    statusCode = simplified.statusCode
+    message = simplified.message
+    errorMessages = simplified.errorMessages
+  } else if (err instanceof ZodError) {
+    const simplified = handleZodErrorHandler(err)
     statusCode = simplified.statusCode
     message = simplified.message
     errorMessages = simplified.errorMessages
@@ -33,12 +44,8 @@ const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
           },
         ]
       : []
-  } else if (err instanceof ZodError) {
-    const simplified = handleZodErrorHandler(err)
-    statusCode = simplified.statusCode
-    message = simplified.message
-    errorMessages = simplified.errorMessages
   } else if (err instanceof ApiError) {
+    statusCode = err.statusCode
     message = err?.message
     errorMessages = err?.message
       ? [
