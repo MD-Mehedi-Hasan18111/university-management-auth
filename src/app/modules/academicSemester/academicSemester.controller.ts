@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express'
 import {
   createAcademicSemester,
+  deleteSemester,
   getAllSemester,
   getOneSemester,
   updateSemester,
@@ -20,7 +21,6 @@ export const createSemester: RequestHandler = async (req, res, next) => {
       message: 'semester created successfully',
       data: result,
     })
-    next()
   } catch (error) {
     next(error)
   }
@@ -43,7 +43,6 @@ export const getSemesters: RequestHandler = async (req, res, next) => {
       meta: result.meta,
       data: result.data,
     })
-    next()
   } catch (error) {
     next(error)
   }
@@ -59,7 +58,6 @@ export const GetSingleSemester: RequestHandler = async (req, res, next) => {
       message: 'semester retrived successfully',
       data: result,
     })
-    next()
   } catch (error) {
     next(error)
   }
@@ -76,7 +74,21 @@ export const UpdateSemester: RequestHandler = async (req, res, next) => {
       message: 'semester updated successfully',
       data: result,
     })
-    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const DeleteSemester: RequestHandler = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const result = await deleteSemester(id)
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'semester deleted successfully',
+      data: result,
+    })
   } catch (error) {
     next(error)
   }

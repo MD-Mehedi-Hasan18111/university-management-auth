@@ -103,3 +103,10 @@ export const updateSemester = async (
   })
   return result
 }
+
+export const deleteSemester = async (
+  id: string
+): Promise<IAcademicSemester | null> => {
+  const result = await AcademicSemester.findByIdAndDelete(id)
+  return result
+}

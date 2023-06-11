@@ -2,6 +2,7 @@ import express from 'express'
 import validateRequest from '../../../middlewares/validateRequest'
 import { academicSemesterValidation } from './academicSemester.validation'
 import {
+  DeleteSemester,
   GetSingleSemester,
   UpdateSemester,
   createSemester,
@@ -23,6 +24,8 @@ router.patch(
   validateRequest(academicSemesterValidation.updateAcademicSemesterZodSchema),
   UpdateSemester
 )
+
+router.delete('/:id', DeleteSemester)
 
 router.get('/', getSemesters)
 
