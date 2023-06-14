@@ -16,6 +16,9 @@ const academicDepartmentSchema = new Schema<IAcademicDepartment>(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   }
 )
 
