@@ -64,6 +64,9 @@ export const getAllStudents = async (
 
 export const getOneStudent = async (id: string): Promise<IStudent | null> => {
   const result = await Student.findById(id)
+    .populate('academicSemester')
+    .populate('academicDepartment')
+    .populate('academicFaculty')
   return result
 }
 
@@ -114,6 +117,9 @@ export const updateStudent = async (
   const result = await Student.findOneAndUpdate({ id }, payload, {
     new: true,
   })
+    .populate('academicSemester')
+    .populate('academicDepartment')
+    .populate('academicFaculty')
 
   return result
 }

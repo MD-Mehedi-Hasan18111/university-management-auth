@@ -2,7 +2,7 @@ import { IAcademicSemester } from '../academicSemester/academicSemester.interfac
 import User from './users.model'
 
 export const findLastStudentId = async (): Promise<string | undefined> => {
-  const lastStudent = await User.findOne({}, { id: 1, _id: 0 })
+  const lastStudent = await User.findOne({ role: 'student' }, { id: 1, _id: 0 })
     .sort({
       createdAt: -1,
     })
@@ -23,7 +23,7 @@ export const generateStudentId = async (
 }
 
 export const findLastFacultyId = async (): Promise<string | undefined> => {
-  const lastFaculty = await User.findOne({}, { id: 1, _id: 0 })
+  const lastFaculty = await User.findOne({ role: 'faculty' }, { id: 1, _id: 0 })
     .sort({
       createdAt: -1,
     })
