@@ -55,7 +55,7 @@ export const GetSingleDepartment: RequestHandler = async (req, res, next) => {
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'faculty retrived successfully',
+      message: 'department retrived successfully',
       data: result,
     })
   } catch (error) {
