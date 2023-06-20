@@ -1,6 +1,7 @@
 import express from 'express'
 import validateRequest from '../../../middlewares/validateRequest'
 import {
+  DeleteFaculty,
   GetSingleFaculty,
   UpdateFaculty,
   getFaculties,
@@ -17,7 +18,7 @@ router.patch(
   UpdateFaculty
 )
 
-// router.delete('/:id', DeleteStudent)
+router.delete('/:id', DeleteFaculty)
 
 router.get('/', getFaculties)
 

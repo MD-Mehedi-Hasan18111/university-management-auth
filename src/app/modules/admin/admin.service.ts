@@ -2,10 +2,11 @@ import httpStatus from 'http-status'
 import ApiError from '../../../errors/ApiError'
 import { IPagination } from './pagination'
 import calculationPagination from '../../../helpers/paginationHelper'
-import { SortOrder } from 'mongoose'
+import mongoose, { SortOrder } from 'mongoose'
 import { IAdmin, IAdminFilter, IGenericResponse } from './admin.interface'
 import { Admin } from './admin.model'
 import { searchAbleFiltersFields } from './admin.constants'
+import User from '../users/users.model'
 
 export const GetAllAdmin = async (
   filters: IAdminFilter,
@@ -93,4 +94,33 @@ export const updateAdmin = async (
   }).populate('managementDepartment')
 
   return result
+}
+
+export const deleteAdmin = async (id: string): Promise<IAdmin | null> => {
+  // check if the faculty is exist
+  const isExist = await Admin.findOne({ id })
+
+  if (!isExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Faculty not found !')
+  }
+
+  const session = await mongoose.startSession()
+
+  try {
+    session.startTransaction()
+    //delete student first
+    const student = await Admin.findOneAndDelete({ id }, { session })
+    if (!student) {
+      throw new ApiError(404, 'Failed to delete student')
+    }
+    //delete user
+    await User.deleteOne({ id })
+    session.commitTransaction()
+    session.endSession()
+
+    return student
+  } catch (error) {
+    session.abortTransaction()
+    throw error
+  }
 }

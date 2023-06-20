@@ -2,6 +2,7 @@ import express from 'express'
 import validateRequest from '../../../middlewares/validateRequest'
 import { studentValidation } from './student.validation'
 import {
+  DeleteStudent,
   GetSingleStudent,
   UpdateStudent,
   getStudents,
@@ -17,7 +18,7 @@ router.patch(
   UpdateStudent
 )
 
-// router.delete('/:id', DeleteStudent)
+router.delete('/:id', DeleteStudent)
 
 router.get('/', getStudents)
 

@@ -1,6 +1,11 @@
 import express from 'express'
 import validateRequest from '../../../middlewares/validateRequest'
-import { GetSingleAdmin, UpdateAdmin, getAllAdmin } from './admin.controller'
+import {
+  DeleteAdmin,
+  GetSingleAdmin,
+  UpdateAdmin,
+  getAllAdmin,
+} from './admin.controller'
 import { adminValidation } from './admin.validation'
 
 const router = express.Router()
@@ -13,7 +18,7 @@ router.patch(
   UpdateAdmin
 )
 
-// router.delete('/:id', DeleteStudent)
+router.delete('/:id', DeleteAdmin)
 
 router.get('/', getAllAdmin)
 

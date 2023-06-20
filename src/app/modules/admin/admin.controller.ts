@@ -3,7 +3,12 @@ import sendResponse from '../../../shared/sendResponse'
 import httpStatus from 'http-status'
 import pick from '../../../shared/pick'
 import { filterFields } from './admin.constants'
-import { GetAllAdmin, getOneAdmin, updateAdmin } from './admin.service'
+import {
+  GetAllAdmin,
+  deleteAdmin,
+  getOneAdmin,
+  updateAdmin,
+} from './admin.service'
 
 export const getAllAdmin: RequestHandler = async (req, res, next) => {
   try {
@@ -51,6 +56,21 @@ export const UpdateAdmin: RequestHandler = async (req, res, next) => {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Admin updated successfully',
+      data: result,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const DeleteAdmin: RequestHandler = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const result = await deleteAdmin(id)
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Admin deleted successfully',
       data: result,
     })
   } catch (error) {

@@ -3,7 +3,12 @@ import sendResponse from '../../../shared/sendResponse'
 import httpStatus from 'http-status'
 import pick from '../../../shared/pick'
 import { filterFields } from './student.constant'
-import { getAllStudents, getOneStudent, updateStudent } from './student.service'
+import {
+  deleteStudent,
+  getAllStudents,
+  getOneStudent,
+  updateStudent,
+} from './student.service'
 
 export const getStudents: RequestHandler = async (req, res, next) => {
   try {
@@ -58,17 +63,17 @@ export const UpdateStudent: RequestHandler = async (req, res, next) => {
   }
 }
 
-// export const DeleteStudent: RequestHandler = async (req, res, next) => {
-//   try {
-//     const id = req.params.id
-//     const result = await deleteStudent(id)
-//     sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: true,
-//       message: 'Student deleted successfully',
-//       data: result,
-//     })
-//   } catch (error) {
-//     next(error)
-//   }
-// }
+export const DeleteStudent: RequestHandler = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const result = await deleteStudent(id)
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Student deleted successfully',
+      data: result,
+    })
+  } catch (error) {
+    next(error)
+  }
+}

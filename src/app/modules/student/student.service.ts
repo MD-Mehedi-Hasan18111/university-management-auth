@@ -2,10 +2,11 @@ import httpStatus from 'http-status'
 import ApiError from '../../../errors/ApiError'
 import { IPagination } from './pagination'
 import calculationPagination from '../../../helpers/paginationHelper'
-import { SortOrder } from 'mongoose'
+import mongoose, { SortOrder } from 'mongoose'
 import { Student } from './student.model'
 import { IGenericResponse, IStudent, IStudentFilter } from './student.interface'
 import { searchAbleFiltersFields } from './student.constant'
+import User from '../users/users.model'
 
 export const getAllStudents = async (
   filters: IStudentFilter,
@@ -124,9 +125,27 @@ export const updateStudent = async (
   return result
 }
 
-// export const deleteStudent = async (
-//   id: string
-// ): Promise<IAcademicSemester | null> => {
-//   const result = await AcademicSemester.findByIdAndDelete(id)
-//   return result
-// }
+export const deleteStudent = async (id: string): Promise<IStudent | null> => {
+  const isExist = Student.findOne({ id })
+  if (!isExist) {
+    throw new ApiError(400, 'Student not found')
+  }
+
+  const session = await mongoose.startSession()
+
+  try {
+    session.startTransaction()
+    const student = await Student.findOneAndDelete({ id }, { session })
+    if (!student) {
+      throw new ApiError(404, 'Failed to delete student')
+    }
+
+    await User.deleteOne({ id })
+    session.commitTransaction()
+    session.abortTransaction()
+    return student
+  } catch (error) {
+    session.abortTransaction()
+    throw error
+  }
+}

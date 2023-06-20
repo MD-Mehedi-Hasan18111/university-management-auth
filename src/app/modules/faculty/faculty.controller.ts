@@ -4,6 +4,7 @@ import httpStatus from 'http-status'
 import pick from '../../../shared/pick'
 import { filterFields } from './faculty.constant'
 import {
+  deleteFaculty,
   getAllFaculties,
   getSingleFaculty,
   updateFaculty,
@@ -55,6 +56,21 @@ export const UpdateFaculty: RequestHandler = async (req, res, next) => {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Faculty updated successfully',
+      data: result,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const DeleteFaculty: RequestHandler = async (req, res, next) => {
+  try {
+    const id = req.params.id
+    const result = await deleteFaculty(id)
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Faculty deleted successfully',
       data: result,
     })
   } catch (error) {
