@@ -11,4 +11,5 @@ export default {
   student_default_pass: process.env.STUDENT_DEFAULT_PASSWORD,
   faculty_default_pass: process.env.FACULTY_DEFAULT_PASSWORD,
   admin_default_pass: process.env.ADMIN_DEFAULT_PASSWORD,
+  bcrypt_password_salt: process.env.BCRYPT_PASSWORD_SALT,
 }
