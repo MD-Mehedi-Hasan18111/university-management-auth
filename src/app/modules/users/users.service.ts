@@ -16,7 +16,6 @@ import { IFaculty } from '../faculty/faculty.interface'
 import { Faculty } from '../faculty/faculty.model'
 import { IAdmin } from '../admin/admin.interface'
 import { Admin } from '../admin/admin.model'
-import bcrypt from 'bcrypt'
 
 export const createStudent = async (
   student: IStudent,
@@ -26,12 +25,6 @@ export const createStudent = async (
   if (!userData.password) {
     userData.password = config.student_default_pass as string
   }
-
-  // hashing password
-  userData.password = await bcrypt.hash(
-    userData.password,
-    Number(config.bcrypt_password_salt)
-  )
 
   // set role
   userData.role = 'student'
@@ -97,12 +90,6 @@ export const createFaculty = async (
     userData.password = config.faculty_default_pass as string
   }
 
-  // hashing password
-  userData.password = await bcrypt.hash(
-    userData.password,
-    Number(config.bcrypt_password_salt)
-  )
-
   // set role
   userData.role = 'faculty'
 
@@ -158,12 +145,6 @@ export const createAdmin = async (
   if (!userData.password) {
     userData.password = config.admin_default_pass as string
   }
-
-  // hashing password
-  userData.password = await bcrypt.hash(
-    userData.password,
-    Number(config.bcrypt_password_salt)
-  )
 
   // set role
   userData.role = 'admin'
