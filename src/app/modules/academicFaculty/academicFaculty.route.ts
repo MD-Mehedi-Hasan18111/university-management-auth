@@ -8,25 +8,55 @@ import {
   createFaculty,
   getFaculties,
 } from './academicFaculty.controller'
+import { auth } from '../../../middlewares/auth'
+import { ENUM_USER_ROLE } from '../../../enums/user'
 
 const router = express.Router()
 
 router.post(
   '/create-faculty',
   validateRequest(academicFacultyValidation.createAcademicFacultyZodSchema),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   createFaculty
 )
 
-router.get('/:id', GetSingleFaculty)
+router.get(
+  '/:id',
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.FACULTY,
+    ENUM_USER_ROLE.STUDENT
+  ),
+  GetSingleFaculty
+)
 
 router.patch(
   '/:id',
   validateRequest(academicFacultyValidation.updateAcademicFacultyZodSchema),
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.FACULTY
+  ),
   UpdateFaculty
 )
 
-router.delete('/:id', DeleteFaculty)
+router.delete(
+  '/:id',
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
+  DeleteFaculty
+)
 
-router.get('/', getFaculties)
+router.get(
+  '/',
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.FACULTY,
+    ENUM_USER_ROLE.STUDENT
+  ),
+  getFaculties
+)
 
 export const AcademicFacultyRoutes = router

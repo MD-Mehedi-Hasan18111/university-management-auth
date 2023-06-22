@@ -6,6 +6,7 @@ import config from '../../../config'
 import {
   CreateAccessToken,
   CreateRefreshToken,
+  verifyToken,
 } from '../../../helpers/jwtHelper'
 import { Secret } from 'jsonwebtoken'
 
@@ -28,13 +29,13 @@ export const loginUser = async (payload: ILoginCredential) => {
 
   // create access token & refresh token
   const accessToken = CreateAccessToken(
-    { id: isUserExist.id, role: isUserExist.role },
+    { userId: isUserExist.id, role: isUserExist.role },
     config.jwt.jwt_secret as Secret,
     config.jwt.jwt_expires_in as string
   )
 
   const refreshToken = CreateRefreshToken(
-    { id: isUserExist.id, role: isUserExist.role },
+    { userId: isUserExist.id, role: isUserExist.role },
     config.jwt.jwt_refresh_secret as Secret,
     config.jwt.jwt_refresh_expries_in as string
   )
@@ -43,5 +44,35 @@ export const loginUser = async (payload: ILoginCredential) => {
     accessToken: accessToken,
     refreshToken: refreshToken,
     needPasswordChange: isUserExist.needPasswordChange,
+  }
+}
+
+export const getRefreshToken = async (token: string) => {
+  let verifiedToken = null
+  try {
+    verifiedToken = verifyToken(token, config.jwt.jwt_refresh_secret as Secret)
+  } catch (error) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid Refresh Token')
+  }
+
+  const { userId } = verifiedToken
+
+  const user = new User()
+  const isUserExist = await user.isUserExist(userId)
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist')
+  }
+
+  // generate new access token
+  const newAccessToken = CreateAccessToken(
+    {
+      id: isUserExist.id,
+      role: isUserExist.role,
+    },
+    config.jwt.jwt_secret as Secret,
+    config.jwt.jwt_expires_in as string
+  )
+  return {
+    accessToken: newAccessToken,
   }
 }
