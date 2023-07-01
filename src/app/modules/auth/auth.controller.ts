@@ -58,12 +58,13 @@ export const ChangePassword: RequestHandler = async (req, res, next) => {
   try {
     const data = req.body
     const user = req.user
+
     const result = await changePassword(user, data)
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'User logged in successfully',
+      message: 'Password updated successfully',
       data: result,
     })
   } catch (error) {

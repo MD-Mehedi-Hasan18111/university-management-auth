@@ -10,21 +10,24 @@ import {
 } from '../../../helpers/jwtHelper'
 import { JwtPayload, Secret } from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import { IUser } from '../users/users.interface'
 
 export const loginUser = async (payload: ILoginCredential) => {
   const { id, password } = payload
   const user = new User()
 
   const isUserExist = await user.isUserExist(id)
-
+  let isPasswordMatch = null
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist')
+  } else {
+    isPasswordMatch = await user.isPasswordMatched(
+      password,
+      isUserExist.password as string
+    )
   }
 
-  if (
-    isUserExist.password &&
-    !user.isPasswordMatched(password, isUserExist.password)
-  ) {
+  if (isUserExist.password && !isPasswordMatch) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Password is incorrect')
   }
 
@@ -81,27 +84,29 @@ export const getRefreshToken = async (token: string) => {
 export const changePassword = async (
   userData: JwtPayload | null,
   payload: IChangePassword
-): Promise<void> => {
+): Promise<IUser | null> => {
   const { oldPassword, newPassword } = payload
   const user = new User()
 
   const isUserExist = await user.isUserExist(userData?.userId)
-
+  let isPasswordMatch = null
   if (!isUserExist) {
     throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist')
+  } else {
+    isPasswordMatch = await user.isPasswordMatched(
+      oldPassword,
+      isUserExist.password as string
+    )
   }
 
-  if (
-    isUserExist.password &&
-    !user.isPasswordMatched(oldPassword, isUserExist.password)
-  ) {
+  if (isUserExist.password && !isPasswordMatch) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Old Password is incorrect')
   }
 
   // hashing password before saving
   const hashPassword = await bcrypt.hash(
     newPassword,
-    config.bcrypt_password_salt as string
+    Number(config.bcrypt_password_salt)
   )
 
   const updateContext = {
@@ -109,5 +114,10 @@ export const changePassword = async (
     needPasswordChange: false,
   }
 
-  await User.findOneAndUpdate({ id: userData?.userId }, updateContext)
+  const updatedUser = await User.findOneAndUpdate(
+    { id: userData?.userId },
+    updateContext
+  )
+
+  return updatedUser
 }
