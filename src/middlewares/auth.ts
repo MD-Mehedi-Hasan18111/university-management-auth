@@ -12,7 +12,7 @@ export const auth =
       const token = req.headers.authorization
 
       if (!token) {
-        throw new ApiError(httpStatus.FORBIDDEN, 'Your are not authorized')
+        throw new ApiError(httpStatus.UNAUTHORIZED, 'Your are not authorized')
       }
 
       let verifiedUser = null
@@ -22,7 +22,7 @@ export const auth =
       req.user = verifiedUser
 
       if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
-        throw new ApiError(httpStatus.FORBIDDEN, 'Your are not authorized')
+        throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden')
       }
 
       next()

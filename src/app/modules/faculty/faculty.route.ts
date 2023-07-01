@@ -7,19 +7,38 @@ import {
   getFaculties,
 } from './faculty.controller'
 import { facultyValidation } from './faculty.validation'
+import { auth } from '../../../middlewares/auth'
+import { ENUM_USER_ROLE } from '../../../enums/user'
 
 const router = express.Router()
 
-router.get('/:id', GetSingleFaculty)
+router.get(
+  '/:id',
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.FACULTY
+  ),
+  GetSingleFaculty
+)
 
 router.patch(
   '/:id',
   validateRequest(facultyValidation.updateFacultyZodSchema),
+  auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   UpdateFaculty
 )
 
-router.delete('/:id', DeleteFaculty)
+router.delete('/:id', auth(ENUM_USER_ROLE.SUPER_ADMIN), DeleteFaculty)
 
-router.get('/', getFaculties)
+router.get(
+  '/',
+  auth(
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.FACULTY
+  ),
+  getFaculties
+)
 
 export const FacultyRoutes = router
