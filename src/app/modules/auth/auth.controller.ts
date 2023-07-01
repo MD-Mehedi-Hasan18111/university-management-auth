@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express'
 import sendResponse from '../../../shared/sendResponse'
 import httpStatus from 'http-status'
-import { getRefreshToken, loginUser } from './auth.service'
+import { changePassword, getRefreshToken, loginUser } from './auth.service'
 import config from '../../../config'
 
 export const LoginUser: RequestHandler = async (req, res, next) => {
@@ -47,6 +47,23 @@ export const RefreshToken: RequestHandler = async (req, res, next) => {
       statusCode: httpStatus.OK,
       success: true,
       message: 'refresh token getting successfully',
+      data: result,
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const ChangePassword: RequestHandler = async (req, res, next) => {
+  try {
+    const data = req.body
+    const user = req.user
+    const result = await changePassword(user, data)
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'User logged in successfully',
       data: result,
     })
   } catch (error) {
